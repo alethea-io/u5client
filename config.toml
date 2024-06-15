@@ -1,2 +1,2 @@
-peer = "http://localhost:50051"
+url = "http://localhost:50051"
 save_dir = "/home/aleksandar/Desktop"

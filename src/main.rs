@@ -31,7 +31,7 @@ struct Cli {
 
 #[derive(Deserialize, Debug)]
 struct RootConfig {
-    peer: String,
+    url: String,
     save_dir: String,
 }
 
@@ -73,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             num_blocks,
             save,
         } => {
-            let mut client = ChainSyncServiceClient::connect(config.peer).await?;
+            let mut client = ChainSyncServiceClient::connect(config.url).await?;
             let parts: Vec<&str> = r#ref.split('-').collect();
 
             let dump_history_request = DumpHistoryRequest {
@@ -108,7 +108,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Commands::Fetch { refs, save } => {
-            let mut client = ChainSyncServiceClient::connect(config.peer).await?;
+            let mut client = ChainSyncServiceClient::connect(config.url).await?;
             let block_refs: Vec<BlockRef> = refs
                 .iter()
                 .map(|ref_str| {
@@ -148,7 +148,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Commands::Follow { refs } => {
-            let mut client = ChainSyncServiceClient::connect(config.peer).await?;
+            let mut client = ChainSyncServiceClient::connect(config.url).await?;
 
             let intersect_refs: Vec<BlockRef> = refs
                 .as_ref()

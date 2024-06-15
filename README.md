@@ -19,11 +19,11 @@ The executable will be available under `target/release/u5client`.
 Before using `u5client`, you need to set up a configuration file named `config.toml` by default, or you can specify another file name with the `--config` option when running commands. Here's an example configuration:
 
 ```toml
-peer = "http://localhost:50051"
+url = "http://localhost:50051"
 save_dir = "/path/to/your/save/directory"
 ```
 
-- `peer`: URL of the UTXO RPC API server.
+- `url`: URL of the UTXO RPC API server.
 - `save_dir`: Directory where the blocks will be saved if the save option is enabled.
 
 ## Usage
