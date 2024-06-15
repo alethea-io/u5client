@@ -1,0 +1,2 @@
+peer = "http://localhost:50051"
+save_dir = "/home/aleksandar/Desktop"
