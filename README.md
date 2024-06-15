@@ -1,6 +1,6 @@
 # u5client
 
-`u5client` is a command-line interface (CLI) tool designed for interacting with UTXO RPC APIs. It allows users to fetch, dump, and follow the tip of blockchain data effectively, supporting operations like fetching specific blocks, dumping block history, and subscribing to blockchain tip updates.
+`u5client` is a command-line interface (CLI) tool designed for interacting with UTXO RPC APIs. It allows users to fetch specific blocks, dump block history, and subscribe to blockchain tip updates.
 
 ## Installation
 

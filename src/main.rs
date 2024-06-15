@@ -38,7 +38,7 @@ struct RootConfig {
 #[derive(Subcommand)]
 enum Commands {
     Fetch {
-        #[clap(long, help = "Block references to fetch")]
+        #[clap(long, help = "Block references to fetch", value_parser, num_args = 1.., value_delimiter = ' ')]
         refs: Vec<String>,
         #[clap(long, help = "Save fetched blocks to files")]
         save: bool,
@@ -52,7 +52,7 @@ enum Commands {
         save: bool,
     },
     Follow {
-        #[clap(long, help = "Block references to try and intersect")]
+        #[clap(long, help = "Block references to try and intersect", value_parser, num_args = 1.., value_delimiter = ' ')]
         refs: Option<Vec<String>>,
     },
 }
@@ -103,7 +103,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let mut file = std::fs::File::create(filename)?;
                     serde_json::to_writer_pretty(&mut file, &block_data)?;
                 } else {
-                    println!("Block {}: {:?}", index, block_data);
+                    println!("Block {}: {:?}", index, json!(&block_data));
                 }
             }
         }
@@ -143,7 +143,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     let mut file = std::fs::File::create(filename)?;
                     serde_json::to_writer_pretty(&mut file, &block_data)?;
                 } else {
-                    println!("Block {}: {:?}", index, block_data);
+                    println!("Block {}: {:?}", index, json!(&block_data));
                 }
             }
         }
@@ -174,12 +174,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     utxorpc_spec::utxorpc::v1alpha::sync::follow_tip_response::Action::Apply(
                         block,
                     ) => {
-                        println!("Apply this block: {:?}", json!(block));
+                        println!("Apply this block: {:?}", json!(&block));
                     }
                     utxorpc_spec::utxorpc::v1alpha::sync::follow_tip_response::Action::Undo(
                         block,
                     ) => {
-                        println!("Undo this block: {:?}", json!(block));
+                        println!("Undo this block: {:?}", json!(&block));
                     }
                     utxorpc_spec::utxorpc::v1alpha::sync::follow_tip_response::Action::Reset(
                         ref_block,
