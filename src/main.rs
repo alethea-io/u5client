@@ -1,14 +1,13 @@
+use clap::{Parser, Subcommand};
+use config::{Config, Environment, File};
 use serde::Deserialize;
+use serde_json::json;
+use tonic::Request;
 use utxorpc_spec::utxorpc::v1alpha::sync::chain_sync_service_client::ChainSyncServiceClient;
 use utxorpc_spec::utxorpc::v1alpha::sync::BlockRef;
 use utxorpc_spec::utxorpc::v1alpha::sync::DumpHistoryRequest;
 use utxorpc_spec::utxorpc::v1alpha::sync::FetchBlockRequest;
 use utxorpc_spec::utxorpc::v1alpha::sync::FollowTipRequest;
-
-use clap::{Parser, Subcommand};
-use config::{Config, Environment, File};
-use serde_json::json;
-use tonic::Request;
 
 #[derive(Parser)]
 #[clap(
