@@ -3,7 +3,7 @@ use config::{Config, Environment, File};
 use serde::Deserialize;
 use serde_json::json;
 use tonic::Request;
-use utxorpc_spec::utxorpc::v1alpha::sync::chain_sync_service_client::ChainSyncServiceClient;
+use utxorpc_spec::utxorpc::v1alpha::sync::sync_service_client::SyncServiceClient;
 use utxorpc_spec::utxorpc::v1alpha::sync::BlockRef;
 use utxorpc_spec::utxorpc::v1alpha::sync::DumpHistoryRequest;
 use utxorpc_spec::utxorpc::v1alpha::sync::FetchBlockRequest;
@@ -37,24 +37,25 @@ struct RootConfig {
 #[derive(Subcommand)]
 enum Commands {
     Fetch {
-        #[clap(long, help = "Block references to fetch", value_parser, num_args = 1.., value_delimiter = ' ')]
+        #[clap(short = 'r', long, help = "Block references to fetch", value_parser, num_args = 1.., value_delimiter = ' ')]
         refs: Vec<String>,
-        #[clap(long, help = "Save fetched blocks to files")]
+        #[clap(short = 's', long, help = "Save fetched blocks to files")]
         save: bool,
     },
     Dump {
-        #[clap(long, help = "Block reference to start dumping from")]
+        #[clap(short = 'r', long, help = "Block reference to start dumping from")]
         r#ref: String,
-        #[clap(long, help = "Number of blocks to dump")]
+        #[clap(short = 'n', long, help = "Number of blocks to dump")]
         num_blocks: u32,
-        #[clap(long, help = "Save dumped blocks to files")]
+        #[clap(short = 's', long, help = "Save dumped blocks to files")]
         save: bool,
     },
     Follow {
-        #[clap(long, help = "Block references to try and intersect", value_parser, num_args = 1.., value_delimiter = ' ')]
+        #[clap(short = 'r', long, help = "Block references to try and intersect", value_parser, num_args = 1.., value_delimiter = ' ')]
         refs: Option<Vec<String>>,
     },
 }
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
@@ -72,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             num_blocks,
             save,
         } => {
-            let mut client = ChainSyncServiceClient::connect(config.url).await?;
+            let mut client = SyncServiceClient::connect(config.url).await?;
             let parts: Vec<&str> = r#ref.split('-').collect();
 
             let dump_history_request = DumpHistoryRequest {
@@ -94,7 +95,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     utxorpc_spec::utxorpc::v1alpha::sync::any_chain_block::Chain::Cardano(
                         block,
                     ) => (block.header.clone().unwrap().slot, json!(block)),
-                    _ => continue,
                 };
 
                 if *save {
@@ -107,7 +107,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Commands::Fetch { refs, save } => {
-            let mut client = ChainSyncServiceClient::connect(config.url).await?;
+            let mut client = SyncServiceClient::connect(config.url).await?;
             let block_refs: Vec<BlockRef> = refs
                 .iter()
                 .map(|ref_str| {
@@ -134,7 +134,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     utxorpc_spec::utxorpc::v1alpha::sync::any_chain_block::Chain::Cardano(
                         block,
                     ) => (block.header.clone().unwrap().slot, json!(block)),
-                    _ => continue,
                 };
 
                 if *save {
@@ -147,7 +146,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Commands::Follow { refs } => {
-            let mut client = ChainSyncServiceClient::connect(config.url).await?;
+            let mut client = SyncServiceClient::connect(config.url).await?;
 
             let intersect_refs: Vec<BlockRef> = refs
                 .as_ref()
@@ -164,6 +163,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             let request = FollowTipRequest {
                 intersect: intersect_refs,
+                field_mask: None,
             };
 
             let mut stream = client.follow_tip(Request::new(request)).await?.into_inner();

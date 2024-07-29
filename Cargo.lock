@@ -1508,9 +1508,9 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "utxorpc-spec"
-version = "0.5.1"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6ed1da9027ea2010458a9aa5da7d896518176165d630f0325ad2c994f69772b"
+checksum = "a1f8872398beb4f4b5e4ee52f7a4bc0725f141ccb10cb5a58d1926e92b947ec0"
 dependencies = [
  "bytes",
  "futures-core",
